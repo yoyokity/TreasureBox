@@ -11,13 +11,11 @@ using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using ImGuiNET;
 using TreasureBox.Helper;
-using TreasureBox.Helper.Viod;
 
 namespace TreasureBox.Plugin.Submarine.UI;
 
 public class 交互
 {
-    private static string[] 交互对象 = { "航行管制面板", "部队合建设备", "冒险人偶014号", "部队制图板", "传唤铃", "部队储物箱" };
     private static int _青磷水 = 99;
 
     public static void Draw()
@@ -37,15 +35,12 @@ public class 交互
         }
 
         ImGui.NewLine();
-        ImGuiHelper.TextColor(Color.Orange, "请站在部队工坊任意可交互对象面前（不需要选中对象）。");
+        ImGuiHelper.TextColor(Color.Orange, "请站在部队工坊需要交互的对象面前");
         ImGui.Bullet();
         ImGui.SameLine();
         ImGui.Text("面板：");
         if (ImGui.Button("部队合建面板"))
-        {
-            if (选中最近目标())
-                VoidAddonHelper.Start(721046);
-        }
+            AddonHelper.InteractWithUnit(多语言文本.部队合建设备);
 
         ImGui.SameLine();
         if (ImGui.Button("潜水艇设计图"))
@@ -54,15 +49,11 @@ public class 交互
         }
 
         if (ImGui.Button("部队箱"))
-        {
-            if (选中最近目标())
-                VoidAddonHelper.Start(720995);
-        }
+            AddonHelper.InteractWithUnit(多语言文本.部队储物柜);
 
         ImGui.SameLine();
         if (ImGui.Button("雇员"))
-            if (选中最近目标())
-                VoidAddonHelper.Start(721440);
+            AddonHelper.InteractWithUnit(多语言文本.传唤铃);
 
         ImGui.NewLine();
         if (ImGui.Button("一键提交潜艇合建物品"))
@@ -83,7 +74,7 @@ public class 交互
         {
             if (ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 7) != 0)
             {
-                LogHelper.Error("当前无法使用传送", "虚空交互");
+                LogHelper.Error("当前无法使用传送", "部队房屋");
                 return;
             }
 
@@ -151,8 +142,7 @@ public class 交互
 
     private static async Task 潜水艇设计图()
     {
-        if (选中最近目标())
-            VoidAddonHelper.Start(721153);
+        AddonHelper.InteractWithUnit(多语言文本.部队制图板);
         if (await AddonHelper.WaitAddonUntil("SelectString"))
         {
             AddonHelper.SetAddonClicked("SelectString", 0);
@@ -166,8 +156,7 @@ public class 交互
 
         //打开面板
         if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
-            if (选中最近目标())
-                VoidAddonHelper.Start(721046);
+            AddonHelper.InteractWithUnit(多语言文本.部队合建设备);
 
         //流程
         await Task.Delay(500);
@@ -263,33 +252,5 @@ public class 交互
 
         LogHelper.Normal("当前提交进展结束");
         await 提交潜艇合建物品();
-    }
-
-    private static bool 选中最近目标()
-    {
-        var list = Svc.Objects.Where(obj => 交互对象.Contains(obj.Name.TextValue)).ToList();
-
-        var distance = 200f;
-        IGameObject re = null;
-        foreach (var obj in list)
-        {
-            var len = (new Vector2(obj.Position.X, obj.Position.Z) -
-                       new Vector2(PosHelper.GetPos.X, PosHelper.GetPos.Z)).Length();
-            if (len < distance)
-            {
-                re = obj;
-                distance = len;
-            }
-        }
-
-        try
-        {
-            Svc.Targets.Target = re;
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-        }
     }
 }

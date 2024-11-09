@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using System.Numerics;
+using ECommons.DalamudServices;
 using ImGuiNET;
 using TreasureBox.Helper;
 using TreasureBox.Plugin.Submarine.Action;
@@ -13,17 +14,23 @@ public class Main : IPlugin
     public string Version => "v1.0";
     public string ImgPath => @"Resources\img\Penguin01.jpg";
     public string Tips => "yoyo得意力作，遥遥领先！";
-    
+
     public static 潜艇[] 潜艇 = [new(), new(), new(), new()];
+
+    public void Init()
+    {
+        多语言文本.Lan = Svc.ClientState.ClientLanguage;
+    }
 
     public void Draw()
     {
         //头部
         ImGui.Text($"{Version}");
-        Strategy();
+
         ImGui.SameLine(0, 30);
 
         ImGuiHelper.TextColor(Color.Orange, Tips);
+        Strategy();
 
         ImGui.Dummy(new Vector2(0, 0));
         {
@@ -39,7 +46,7 @@ public class Main : IPlugin
                 Option.ClickedStop = true;
             }
         }
-        
+
         //主体
         ImGui.Dummy(new Vector2(0, 0));
 
@@ -50,6 +57,7 @@ public class Main : IPlugin
                 ImGui.Dummy(new Vector2(0, 0));
                 ImGui.SameLine(0, 5);
                 ImGui.BeginChild("###潜水艇tab路线", new Vector2(-10, 0), false);
+                ImGui.Dummy(new Vector2(0, 10));
 
                 路线设置.Draw();
 
@@ -62,6 +70,7 @@ public class Main : IPlugin
                 ImGui.Dummy(new Vector2(0, 0));
                 ImGui.SameLine(0, 5);
                 ImGui.BeginChild("###潜水艇tab收益", new Vector2(-10, 0), false);
+                ImGui.Dummy(new Vector2(0, 5));
 
                 收益.Draw();
 
@@ -74,16 +83,18 @@ public class Main : IPlugin
                 ImGui.Dummy(new Vector2(0, 0));
                 ImGui.SameLine(0, 5);
                 ImGui.BeginChild("###潜水艇tab交互", new Vector2(-10, 0), false);
+                ImGui.Dummy(new Vector2(0, 5));
 
                 交互.Draw();
 
                 ImGui.EndChild();
                 ImGui.EndTabItem();
             }
+
             ImGui.EndTabBar();
         }
     }
-    
+
     // 攻略
     private static void Strategy()
     {

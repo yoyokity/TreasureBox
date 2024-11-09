@@ -15,7 +15,7 @@ public class 路线设置
 
     public static void Draw()
     {
-        ImGui.BeginChild("###潜水艇路线选择子窗口", new Vector2(300, 125), false);
+        ImGui.BeginChild("###潜水艇路线选择子窗口", new Vector2(300, 150), false);
         if (Settings.Instance.自动分配路线)
         {
             自动分配路线ui.Draw();

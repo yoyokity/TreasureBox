@@ -1,6 +1,6 @@
 ﻿using Dalamud.Configuration;
-using Dalamud.Plugin;
 using System;
+using ECommons.DalamudServices;
 
 namespace TreasureBox;
 
@@ -30,6 +30,6 @@ public class Configuration : IPluginConfiguration
     
     public void Save()
     {
-        TreasureBox.PluginInterface.SavePluginConfig(this);
+        Svc.PluginInterface.SavePluginConfig(this);
     }
 }

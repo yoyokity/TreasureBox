@@ -15,6 +15,10 @@ public interface IPlugin
     /// </summary>
     public string ImgPath { get; }
     /// <summary>
+    /// 初始化
+    /// </summary>
+    public void Init(); 
+    /// <summary>
     /// 绘制界面
     /// </summary>
     public void Draw();

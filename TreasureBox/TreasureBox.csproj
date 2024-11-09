@@ -60,10 +60,6 @@
             <Private>false</Private>
         </Reference>
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Plugin\Submarine\Class\" />
-    </ItemGroup>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="xcopy /Y /E /I &quot;$(TargetDir)*&quot; &quot;..\out&quot;"/>

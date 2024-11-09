@@ -33,7 +33,7 @@ public static class 收艇
 
     public static async Task Run()
     {
-        Main.潜艇 = new 潜艇[] { new(), new(), new(), new() };
+        Main.潜艇 = [new(), new(), new(), new()];
         Tips.Clear();
         收益.本次收益 = 0;
 
@@ -71,7 +71,7 @@ public static class 收艇
         if (!await AddonHelper.WaitAddonUntil(Addon.选择界面) || Option.ClickedStop)
             return;
 
-        Regex r = new(@"(?<name>.*)  \[(?<level>\d+)级\]   ?\[?(?<state>探索完成|正在探索)?");
+        Regex r = new(@"(?<name>.*)  \[(?<level>\d+)级\]   ?\[?(?<state>探索完成|正在探索|探索完了|探索中)?");
 
         //登记潜艇
         uint index = 7;
@@ -84,9 +84,9 @@ public static class 收艇
                 潜艇.Name = r.Match(v).Groups["name"].Value;
                 潜艇.Level = uint.Parse(r.Match(v).Groups["level"].Value);
                 var state = r.Match(v).Groups["state"].Value;
-                if (state == "正在探索")
+                if (state == 多语言文本.正在探索)
                     潜艇.State = 探索状态.正在探索;
-                if (state == "探索完成")
+                if (state == 多语言文本.探索完成)
                     潜艇.State = 探索状态.探索完成;
             }
 
@@ -403,11 +403,7 @@ public static class 收艇
     {
         if (AddonHelper.CheckAddon(Addon.选择界面))
         {
-            AddonHelper.InteractWithUnit([
-                "航行管制面板",
-                "管制卓",
-                "voyage control panel"
-            ]);
+            AddonHelper.InteractWithUnit(多语言文本.航行管制面板);
         }
     }
 
@@ -424,7 +420,7 @@ public static class 收艇
             if (AddonHelper.CheckAddon(addonName))
             {
                 var v = AddonHelper.GetAddonValue(addonName, 2).String;
-                if (v.StartsWith("请选择潜水艇"))
+                if (v.StartsWith(多语言文本.请选择潜水艇))
                 {
                     await Task.Delay(delay / 2);
                     return true;
