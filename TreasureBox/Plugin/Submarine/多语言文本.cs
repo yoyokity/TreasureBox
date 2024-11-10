@@ -7,6 +7,8 @@ public static class 多语言文本
 {
     public static ClientLanguage Lan = ClientLanguage.ChineseSimplified;
 
+    public static string 潘多拉魔盒 => "Pandora's Box";
+    
     public static string 航行管制面板 => Lan switch
     {
         ClientLanguage.ChineseSimplified => "航行管制面板",

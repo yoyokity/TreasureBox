@@ -61,11 +61,8 @@ public class 交互
             提交潜艇合建物品();
         }
 
-        if (!Svc.PluginInterface.InstalledPlugins.Any(p => p.InternalName == "PandorasBox" && p.IsLoaded))
-        {
-            ImGui.SameLine();
-            ImGuiHelper.TextColor(Color.Red, "请先安装潘多拉魔盒PandorasBox插件！并开启自动提交物品功能。");
-        }
+        ImGui.SameLine();
+        ImGuiHelper.TextColor(Color.Red, $"请先安装潘多拉魔盒{多语言文本.潘多拉魔盒}插件！并开启自动提交物品功能。");
     }
 
     private static async Task 传送到部队()
@@ -151,13 +148,10 @@ public class 交互
 
     private static async Task 提交潜艇合建物品()
     {
-        if (!Svc.PluginInterface.InternalName.Contains("PandorasBox"))
-            return;
-
         //打开面板
         if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
             AddonHelper.InteractWithUnit(多语言文本.部队合建设备);
-
+            
         //流程
         await Task.Delay(500);
         var v = AddonHelper.GetAddonValue("SelectString", 7).String;
@@ -242,7 +236,7 @@ public class 交互
                 }
                 else
                 {
-                    LogHelper.Error($"请先安装潘多拉魔盒PandorasBox插件！并开启自动提交物品功能。", "潜艇");
+                    LogHelper.Error($"请先安装潘多拉魔盒{多语言文本.潘多拉魔盒}插件！并开启自动提交物品功能。", "潜艇");
                     return;
                 }
 

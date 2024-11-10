@@ -21,13 +21,6 @@
             <Private>true</Private>
         </Reference>
     </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="ClickLib">
-            <HintPath>../ClickLib/ClickLib.dll</HintPath>
-            <Private>true</Private>
-        </Reference>
-    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="DalamudPackager" Version="2.1.13"/>
