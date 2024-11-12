@@ -8,6 +8,45 @@ public static class 多语言文本
     public static ClientLanguage Lan = ClientLanguage.ChineseSimplified;
 
     public static string 潘多拉魔盒 => "Pandora's Box";
+    public static string 进入房屋 => Lan switch
+    {
+        ClientLanguage.ChineseSimplified => "进入房屋",
+        ClientLanguage.English => "entrance",
+        ClientLanguage.Japanese => "ハウスへ入る",
+        _ => "进入房屋"
+    };
+
+    public static string 移动到其他房间 => Lan switch
+    {
+        ClientLanguage.ChineseSimplified => "移动到其他房间",
+        ClientLanguage.English => "entrance to additional chambers",
+        ClientLanguage.Japanese => "別室へ移動する",
+        _ => "移动到其他房间"
+    };
+    
+    public static string 交纳素材 => Lan switch
+    {
+        ClientLanguage.ChineseSimplified => "交纳素材",
+        ClientLanguage.English => "Project Material Delivery",
+        ClientLanguage.Japanese => "素材の納品",
+        _ => "交纳素材"
+    };
+    
+    public static string 推进工程进展 => Lan switch
+    {
+        ClientLanguage.ChineseSimplified => "推进工程进展",
+        ClientLanguage.English => "Project Progression",
+        ClientLanguage.Japanese => "工程進捗の実行",
+        _ => "推进工程进展"
+    };
+    
+    public static string 领取道具 => Lan switch
+    {
+        ClientLanguage.ChineseSimplified => "领取道具",
+        ClientLanguage.English => "Collect finished product",
+        ClientLanguage.Japanese => "アイテムを受け取る",
+        _ => "领取道具"
+    };
     
     public static string 航行管制面板 => Lan switch
     {

@@ -70,7 +70,7 @@ public class 求解器
                     text = text[..^1];
                 }
 
-                LogHelper.Normal($"再次发送请求 {text}");
+                LogHelper.PrintInfo($"再次发送请求 {text}");
 
                 response = await client.GetAsync(text);
                 response.EnsureSuccessStatusCode();
@@ -83,7 +83,7 @@ public class 求解器
         }
         catch (HttpRequestException ex)
         {
-            LogHelper.Error($"MogShip请求失败：{ex.Message}");
+            LogHelper.PrintError($"MogShip请求失败：{ex.Message}");
             return null;
         }
     }
@@ -108,7 +108,7 @@ public class 求解器
             }
         }
 
-        LogHelper.Tips("由于找不到满足一天的航线，因此该潜艇将使用经验比最高航线。");
+        LogHelper.PrintTips("由于找不到满足一天的航线，因此该潜艇将使用经验比最高航线。");
         return route.Collection[0];
     }
 }

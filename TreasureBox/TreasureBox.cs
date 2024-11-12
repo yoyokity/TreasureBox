@@ -6,9 +6,9 @@ using System.Reflection;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
 using Dalamud.Plugin;
-using Dalamud.IoC;
-using Dalamud.Plugin.Services;
+using ECommons.Automation.LegacyTaskManager;
 using ECommons.DalamudServices;
+using TreasureBox.Helper;
 using TreasureBox.UI;
 
 namespace TreasureBox;
@@ -43,7 +43,7 @@ public class TreasureBox : IDalamudPlugin
         });
 
         Init();
-        
+
 
         WindowSystem.AddWindow(MainWindow);
 
@@ -82,6 +82,8 @@ public class TreasureBox : IDalamudPlugin
 
         // ConfigWindow.Dispose();
         MainWindow.Dispose();
+        
+        VNavmeshIPC.Dispose();
 
         Svc.Commands.RemoveHandler(CommandName);
     }
@@ -90,4 +92,9 @@ public class TreasureBox : IDalamudPlugin
     {
         ToggleMainUI();
     }
+}
+
+public static class P
+{
+    public static TaskManager TaskManager = new() { AbortOnTimeout = true, TimeLimitMS = 60 * 1000, ShowDebug = false };
 }

@@ -17,7 +17,7 @@ public class 修潜艇
         if (!await AddonHelper.WaitAddonUntil(Addon.修理界面) || Option.ClickedStop)
             return;
 
-        LogHelper.Normal($"正在登记潜水艇信息 {Main.潜艇[index].Name}");
+        LogHelper.PrintInfo($"正在登记潜水艇信息 {Main.潜艇[index].Name}");
         登记配件(Addon.修理界面, index);
 
         //修理
@@ -34,7 +34,7 @@ public class 修潜艇
         if (Option.ClickedStop)
             return;
         var v = AddonHelper.GetAddonValue(Addon.修理界面, (uint)index).UInt;
-        LogHelper.Normal($"检查配件1 耗损度{v}");
+        LogHelper.PrintInfo($"检查配件1 耗损度{v}");
 
         if (v < 1)
         {
@@ -73,7 +73,7 @@ public class 修潜艇
         //判断是否提示升级配件
         if (潜艇 is { Level: >= 15, 船体配件: 潜艇配件.船体.鲨鱼级船体, 船首配件: 潜艇配件.船首.鲨鱼级船首, 船尾配件: 潜艇配件.船尾.鲨鱼级船尾, 舰桥配件: 潜艇配件.舰桥.鲨鱼级舰桥 })
         {
-            LogHelper.Normal($"潜艇【{潜艇.Name}】已超过15级，建议升级配件为 1121");
+            LogHelper.PrintInfo($"潜艇【{潜艇.Name}】已超过15级，建议升级配件为 1121");
             收艇.Tips.Add($"潜艇【{潜艇.Name}】已超过15级，建议升级配件为 1121");
         }
 
@@ -82,7 +82,7 @@ public class 修潜艇
             if (潜艇配件.转俗语(潜艇.船体配件) != Settings.Instance.自动配件船体 && 潜艇配件.转俗语(潜艇.船首配件) != Settings.Instance.自动配件船首 &&
                 潜艇配件.转俗语(潜艇.船尾配件) != Settings.Instance.自动配件船尾 && 潜艇配件.转俗语(潜艇.舰桥配件) != Settings.Instance.自动配件舰桥)
             {
-                LogHelper.Normal(
+                LogHelper.PrintInfo(
                     $"潜艇【{潜艇.Name}】已到达{Settings.Instance.自动路线}捞金等级，建议升级配件为 {Settings.Instance.自动配件船体}{Settings.Instance.自动配件船尾}{Settings.Instance.自动配件船首}{Settings.Instance.自动配件舰桥}");
                 收艇.Tips.Add(
                     $"潜艇【{潜艇.Name}】已到达{Settings.Instance.自动路线}捞金等级，建议升级配件为 {Settings.Instance.自动配件船体}{Settings.Instance.自动配件船尾}{Settings.Instance.自动配件船首}{Settings.Instance.自动配件舰桥}");

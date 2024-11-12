@@ -8,6 +8,7 @@ using ECommons.Automation;
 using ECommons.DalamudServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Component.GUI;
+using ECommons.GameFunctions;
 using ValueType = FFXIVClientStructs.FFXIV.Component.GUI.ValueType;
 
 namespace TreasureBox.Helper;
@@ -109,7 +110,7 @@ public static class AddonHelper
     /// <summary>
     /// 与游戏内单位交互
     /// </summary>
-    public static unsafe bool InteractWithUnit(uint objectId, bool checklineOnSight = true)
+    public static unsafe bool InteractWithUnit(uint objectId, bool checklineOnSight = false)
     {
         foreach (var obj in Svc.Objects)
         {
@@ -123,12 +124,12 @@ public static class AddonHelper
             }
             catch (Exception)
             {
-                LogHelper.Error($"找不到交互对象 {objectId} ");
+                LogHelper.PrintError($"找不到交互对象 {objectId} ");
                 return false;
             }
         }
 
-        LogHelper.Error($"找不到交互对象 {objectId} ");
+        LogHelper.PrintError($"找不到交互对象 {objectId} ");
         return false;
     }
 
@@ -150,7 +151,7 @@ public static class AddonHelper
         }
         catch (Exception)
         {
-            LogHelper.Error($"找不到交互对象 {objectName} ");
+            LogHelper.PrintError($"找不到交互对象 {objectName} ");
         }
 
         return false;
@@ -174,7 +175,7 @@ public static class AddonHelper
         }
         catch (Exception)
         {
-            LogHelper.Error($"找不到交互对象 {objectName} ");
+            LogHelper.PrintError($"找不到交互对象 {objectName} ");
         }
 
         return false;

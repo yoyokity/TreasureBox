@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Numerics;
-using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Interface.Windowing;
-using ECommons.DalamudServices;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using Dalamud.Utility.Numerics;
 using ImGuiNET;
 using TreasureBox.Helper;
+using ECommons.Automation.LegacyTaskManager;
+using ECommons.DalamudServices;
+using ECommons.GameHelpers;
+using TreasureBox.Plugin.Submarine;
 
 namespace TreasureBox.UI;
 
@@ -91,5 +92,65 @@ public class Main
 
     public static void MainDraw()
     {
+        ImGui.Text($"当前坐标：");
+        if (PosHelper.GetPos.HasValue)
+        {
+            ImGui.SameLine();
+            ImGui.Text(PosHelper.GetPos.ToString());
+        }
+
+        if (ImGui.CollapsingHeader("快捷传送", ImGuiTreeNodeFlags.DefaultOpen))
+        {
+            if (ImGui.Button("回自己服务器", new Vector2(70, 30)))
+            {
+                ChatHelper.SendMessage("/li");
+            }
+
+            if (ImGui.Button("军队", new Vector2(70, 30)))
+            {
+                ChatHelper.SendMessage("/li gc");
+            }
+
+            if (ImGui.Button("部队房", new Vector2(70, 30)))
+            {
+                ChatHelper.SendMessage("/li fc");
+            }
+
+            if (ImGui.Button("部队工坊", new Vector2(70, 30)))
+            {
+                if (!PosHelper.NavIsEnabled)
+                {
+                    LogHelper.PrintError("请先安装vnavmesh自动导航插件");
+                    return;
+                }
+                var obj = ObjectHelper.FindObject(多语言文本.进入房屋);
+                ObjectHelper.SelectTarget(obj);
+                P.TaskManager.Abort();
+                P.TaskManager.Enqueue(() => PosHelper.MoveTo(ObjectHelper.Target.Position));
+                P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(obj.EntityId));
+                P.TaskManager.Enqueue(() => AddonHelper.CheckAddon("SelectYesno"));
+                P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SelectYesno", 0));
+                P.TaskManager.Enqueue(PosHelper.WaitBetweenAreas);
+                P.TaskManager.Enqueue(() =>
+                {
+                    obj = ObjectHelper.FindObject(多语言文本.移动到其他房间);
+                    PosHelper.MoveTo(obj.Position);
+                });
+                P.TaskManager.DelayNext(1000);
+                P.TaskManager.Enqueue(() => ObjectHelper.SelectTarget(obj));
+                P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(obj.EntityId));
+            }
+
+            if (ImGui.Button("测试", new Vector2(70, 30)))
+            {
+                // LogHelper.Log("1");
+                // var obj = ObjectHelper.FindObject(多语言文本.移动到其他房间);
+                // LogHelper.Log(obj.Position.ToString());
+                // P.TaskManager.Enqueue(() => ObjectHelper.SelectTarget(obj));
+                // P.TaskManager.DelayNext(500);
+                // P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(obj.EntityId));
+                LogHelper.Log($"{AddonHelper.GetAddonValue("SubmarinePartsMenu", 87).Byte}");
+            }
+        }
     }
 }

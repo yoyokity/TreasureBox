@@ -63,6 +63,11 @@ public class 交互
 
         ImGui.SameLine();
         ImGuiHelper.TextColor(Color.Red, $"请先安装潘多拉魔盒{多语言文本.潘多拉魔盒}插件！并开启自动提交物品功能。");
+
+        if (ImGui.Button("停止提交"))
+        {
+            P.TaskManager.Abort();
+        }
     }
 
     private static async Task 传送到部队()
@@ -71,7 +76,7 @@ public class 交互
         {
             if (ActionManager.Instance()->GetActionStatus(ActionType.GeneralAction, 7) != 0)
             {
-                LogHelper.Error("当前无法使用传送", "部队房屋");
+                LogHelper.PrintError("当前无法使用传送", "部队房屋");
                 return;
             }
 
@@ -146,105 +151,149 @@ public class 交互
         }
     }
 
-    private static async Task 提交潜艇合建物品()
+    private static void 提交潜艇合建物品()
     {
+        P.TaskManager.Abort();
+        // 物品提交面板
+        if (AddonHelper.CheckAddon("SubmarinePartsMenu"))
+        {
+            var count = AddonHelper.GetAddonValue("SubmarinePartsMenu", 11).UInt;
+
+            //循环提交
+            uint indexI = 0;
+            for (uint i = 0; i < count; i++)
+            {
+                var name = AddonHelper.GetAddonValue("SubmarinePartsMenu", 36 + i).String;
+                var 需要 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 60 + i).UInt;
+                var 含有 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 72 + i).UInt;
+                var 还需提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 120 + i).UInt -
+                           AddonHelper.GetAddonValue("SubmarinePartsMenu", 108 + i).UInt;
+
+                LogHelper.Log($"name:{name}, 需要:{需要}, 含有:{含有}, 还需提交:{还需提交}");
+                if (还需提交 == 0)
+                {
+                    P.TaskManager.Enqueue(() => indexI++);
+                    continue;
+                }
+
+                if (需要 > 含有)
+                {
+                    //物品不足时跳过这个
+                    P.TaskManager.Enqueue(() => LogHelper.PrintInfo($"{name}不足！"));
+                    P.TaskManager.Enqueue(() => indexI++);
+                    continue;
+                }
+
+                //多次提交
+                var 已提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 108 + i).UInt;
+                var 需要提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 120 + i).UInt;
+                uint 能提交次数 = 含有 / 需要;
+                if (能提交次数 + 已提交 < 需要提交)
+                {
+                    P.TaskManager.Enqueue(() => LogHelper.PrintInfo($"{name}不足！"));
+                    需要提交 = 能提交次数 + 已提交;
+                }
+
+                var indexJ = 已提交;
+                for (var j = 已提交; j < 需要提交; j++)
+                {
+                    P.TaskManager.Enqueue(() => LogHelper.Log($"正在提交 {indexI} {name} {indexJ}/{需要提交}"));
+                    //点击
+                    P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SubmarinePartsMenu", 0, indexI, 需要, 0));
+                    P.TaskManager.DelayNext(500);
+                    P.TaskManager.Enqueue(() => AddonHelper.CheckAddon("Request"));
+                    P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("Request", 0));
+
+                    //可能有两次确认也可能一次，两次的话有一次优质物品的确认
+                    P.TaskManager.DelayNext(300);
+                    P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SelectYesno", 0));
+                    P.TaskManager.DelayNext(300);
+                    P.TaskManager.Enqueue(() =>
+                    {
+                        if (AddonHelper.CheckAddon("SelectYesno"))
+                        {
+                            AddonHelper.SetAddonClicked("SelectYesno", 0);
+                        }
+                    });
+                    P.TaskManager.DelayNext(1500);
+                    P.TaskManager.Enqueue(() => indexJ++);
+                }
+
+                P.TaskManager.Enqueue(() => indexI++);
+            }
+
+            P.TaskManager.Enqueue(End);
+            return;
+        }
+
+        //二级菜单
+        if (AddonHelper.CheckAddon("SelectString"))
+        {
+            var v = AddonHelper.GetAddonValue("SelectString", 7).String;
+            if (v.StartsWith(多语言文本.交纳素材))
+            {
+                P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SelectString", 0));
+                P.TaskManager.DelayNext(200);
+                P.TaskManager.Enqueue(() => AddonHelper.CheckAddon("SubmarinePartsMenu"));
+                P.TaskManager.Enqueue(提交潜艇合建物品);
+                return;
+            }
+
+            if (v.StartsWith(多语言文本.推进工程进展) || v.StartsWith(多语言文本.领取道具) || v.StartsWith("完成"))
+            {
+                P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SelectString", 0));
+                P.TaskManager.Enqueue(() => AddonHelper.CheckAddon("SelectYesno"));
+                P.TaskManager.Enqueue(() => AddonHelper.SetAddonClicked("SelectYesno", 0));
+                P.TaskManager.Enqueue(End);
+                return;
+            }
+
+            P.TaskManager.Enqueue(End);
+            return;
+        }
+
         //打开面板
         if (!Svc.Condition[ConditionFlag.OccupiedInQuestEvent])
-            AddonHelper.InteractWithUnit(多语言文本.部队合建设备);
-            
-        //流程
-        await Task.Delay(500);
-        var v = AddonHelper.GetAddonValue("SelectString", 7).String;
-        if (v.StartsWith("交纳素材"))
         {
-            AddonHelper.SetAddonClicked("SelectString", 0);
-        }
-        else
-        {
-            if (v.StartsWith("推进") || v.StartsWith("领取"))
+            var obj = ObjectHelper.FindObject(多语言文本.部队合建设备);
+            if (obj == null)
             {
-                AddonHelper.SetAddonClicked("SelectString", 0);
-                if (await AddonHelper.WaitAddonUntil("SelectYesno"))
+                LogHelper.PrintError("请先进入部队工坊！");
+                return;
+            }
+
+            if (!PosHelper.NavIsEnabled)
+            {
+                if (PosHelper.Distance2D(ObjectHelper.Player.Position, obj.Position) >= 4.5)
                 {
-                    AddonHelper.SetAddonClicked("SelectYesno", 0);
-                    await Task.Delay(1000);
-                    await 提交潜艇合建物品();
+                    LogHelper.PrintError("请先靠近部队合建设备！");
+                    return;
                 }
             }
             else
             {
-                if (v.StartsWith("完成"))
+                if (PosHelper.Distance2D(ObjectHelper.Player.Position, obj.Position) >= 4.5)
                 {
-                    AddonHelper.SetAddonClicked("SelectString", 0);
-                    await Task.Delay(5000);
-                    await 提交潜艇合建物品();
-                }
-                else
-                {
-                    return;
+                    P.TaskManager.Enqueue(() => PosHelper.MoveTo(obj.Position, nearStop: 4.5f));
                 }
             }
+
+            P.TaskManager.Enqueue(() => ObjectHelper.SelectTarget(obj));
+            P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(多语言文本.部队合建设备));
+            P.TaskManager.Enqueue(() => AddonHelper.CheckAddon("SelectString"));
+            P.TaskManager.Enqueue(提交潜艇合建物品);
         }
-
-        //主面板
-        if (!await AddonHelper.WaitAddonUntil("SubmarinePartsMenu") || Option.ClickedStop)
-            return;
-        var count = AddonHelper.GetAddonValue("SubmarinePartsMenu", 11).UInt;
-
-        //循环提交
-        for (uint i = 0; i < count; i++)
+        else
         {
-            var name = AddonHelper.GetAddonValue("SubmarinePartsMenu", 36 + i).String;
-            var 需要 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 60 + i).UInt;
-            var 含有 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 72 + i).UInt;
-            var 还需提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 120 + i).UInt -
-                       AddonHelper.GetAddonValue("SubmarinePartsMenu", 108 + i).UInt;
-
-            if (还需提交 == 0)
-                continue;
-            if (需要 > 含有)
-            {
-                LogHelper.Error($"{name}不足！合建提交结束。", "潜艇");
-                return;
-            }
-
-            //多次提交
-            var 已提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 108 + i).UInt;
-            var 需要提交 = AddonHelper.GetAddonValue("SubmarinePartsMenu", 120 + i).UInt;
-            for (var j = 已提交; j < 需要提交; j++)
-            {
-                LogHelper.Normal($"正在提交{name} {j}/{需要提交}");
-                //点击
-                AddonHelper.SetAddonClicked("SubmarinePartsMenu", 0, i, 需要, 0);
-                LogHelper.Normal($"1");
-                await Task.Delay(500);
-                LogHelper.Normal($"2");
-                AddonHelper.SetAddonClicked("Request", 0, 0, 0, 0);
-                LogHelper.Normal($"3");
-
-                await Task.Delay(200);
-
-                if (AddonHelper.CheckAddon("SelectYesno"))
-                {
-                    if (AddonHelper.GetAddonValue("SelectYesno", 0).String.StartsWith("确定要交易优质"))
-                    {
-                        AddonHelper.SetAddonClicked("SelectYesno", 0);
-                        await Task.Delay(200);
-                    }
-
-                    AddonHelper.SetAddonClicked("SelectYesno", 0);
-                }
-                else
-                {
-                    LogHelper.Error($"请先安装潘多拉魔盒{多语言文本.潘多拉魔盒}插件！并开启自动提交物品功能。", "潜艇");
-                    return;
-                }
-
-                await Task.Delay(1500);
-            }
+            LogHelper.PrintError("请先关闭其余对话框!");
         }
 
-        LogHelper.Normal("当前提交进展结束");
-        await 提交潜艇合建物品();
+        return;
+
+        void End()
+        {
+            LogHelper.PrintSuccess("提交潜艇合建物品结束");
+            P.TaskManager.Abort();
+        }
     }
 }
