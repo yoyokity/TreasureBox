@@ -58,7 +58,6 @@
         <Exec Command="xcopy /Y /E /I &quot;$(TargetDir)*&quot; &quot;..\out&quot;"/>
         <Exec Command="xcopy &quot;..\Resources\*&quot; &quot;..\out\Resources&quot; /E /I /Y"/>
         <Exec Command="rmdir /S /Q &quot;..\out\TreasureBox&quot;"/>
-        <Exec Command="xcopy /Y /E /I &quot;..\out\*&quot; &quot;D:\game\FF14\hack\Dalamud\Plugins\TreasureBox\&quot;"/>
     </Target>
     
 </Project>
