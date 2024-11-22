@@ -92,31 +92,28 @@ public class Main
 
     public static void MainDraw()
     {
-        ImGui.Text($"当前坐标：");
-        if (PosHelper.GetPos.HasValue)
-        {
-            ImGui.SameLine();
-            ImGui.Text(PosHelper.GetPos.ToString());
-        }
-
         if (ImGui.CollapsingHeader("快捷传送", ImGuiTreeNodeFlags.DefaultOpen))
         {
-            if (ImGui.Button("回自己服务器", new Vector2(70, 30)))
+            ImGui.Dummy(new Vector2(0, 3));
+            if (ImGui.Button("自己服务器", new Vector2(100, 40)))
             {
                 ChatHelper.SendMessage("/li");
             }
-
-            if (ImGui.Button("军队", new Vector2(70, 30)))
+            
+            ImGui.Dummy(new Vector2(0, 3));
+            if (ImGui.Button("军队", new Vector2(100, 40)))
             {
                 ChatHelper.SendMessage("/li gc");
             }
-
-            if (ImGui.Button("部队房", new Vector2(70, 30)))
+            
+            ImGui.Dummy(new Vector2(0, 3));
+            if (ImGui.Button("部队房", new Vector2(100, 40)))
             {
                 ChatHelper.SendMessage("/li fc");
             }
 
-            if (ImGui.Button("部队工坊", new Vector2(70, 30)))
+            ImGui.SameLine();
+            if (ImGui.Button("部队工坊", new Vector2(100, 40)))
             {
                 if (!PosHelper.NavIsEnabled)
                 {
@@ -124,6 +121,8 @@ public class Main
                     return;
                 }
                 var obj = ObjectHelper.FindObject(多语言文本.进入房屋);
+                if (obj == null) return;
+                
                 ObjectHelper.SelectTarget(obj);
                 P.TaskManager.Abort();
                 P.TaskManager.Enqueue(() => PosHelper.MoveTo(ObjectHelper.Target.Position));
@@ -139,17 +138,6 @@ public class Main
                 P.TaskManager.DelayNext(1000);
                 P.TaskManager.Enqueue(() => ObjectHelper.SelectTarget(obj));
                 P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(obj.EntityId));
-            }
-
-            if (ImGui.Button("测试", new Vector2(70, 30)))
-            {
-                // LogHelper.Log("1");
-                // var obj = ObjectHelper.FindObject(多语言文本.移动到其他房间);
-                // LogHelper.Log(obj.Position.ToString());
-                // P.TaskManager.Enqueue(() => ObjectHelper.SelectTarget(obj));
-                // P.TaskManager.DelayNext(500);
-                // P.TaskManager.Enqueue(() => AddonHelper.InteractWithUnit(obj.EntityId));
-                LogHelper.Log($"{AddonHelper.GetAddonValue("SubmarinePartsMenu", 87).Byte}");
             }
         }
     }

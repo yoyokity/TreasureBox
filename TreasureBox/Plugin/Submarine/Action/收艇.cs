@@ -111,7 +111,7 @@ public static class 收艇
             //收潜艇
             if (潜艇.State == 探索状态.探索完成)
             {
-                LogHelper.PrintInfo($"点击潜艇 {潜艇.Name} {潜艇.State}");
+                LogHelper.Log($"点击潜艇 {潜艇.Name} {潜艇.State}");
                 AddonHelper.SetAddonClicked(Addon.选择界面, count);
                 if (!await AddonHelper.WaitAddonUntil(Addon.报告界面) || Option.ClickedStop)
                     return;
@@ -135,7 +135,7 @@ public static class 收艇
 
             if (潜艇.State == 探索状态.停靠)
             {
-                LogHelper.PrintInfo($"点击潜艇 {潜艇.Name} {潜艇.State}");
+                LogHelper.Log($"点击潜艇 {潜艇.Name} {潜艇.State}");
                 AddonHelper.SetAddonClicked(Addon.选择界面, count);
                 if (!await AddonHelper.WaitAddonUntil(Addon.选择界面) || Option.ClickedStop)
                     return;
@@ -145,7 +145,7 @@ public static class 收艇
                 await 发潜艇(count);
             }
 
-            LogHelper.PrintInfo($"{潜艇.Name}结束");
+            LogHelper.Log($"{潜艇.Name}结束");
         }
 
         //关闭潜艇面板
@@ -164,7 +164,7 @@ public static class 收艇
         if (Settings.Instance.自动分配路线)
         {
             路线 = 自动路线.选择(Main.潜艇[index]);
-            LogHelper.PrintInfo($"{Main.潜艇[index].Name} 自动选择方案为 {路线}");
+            LogHelper.Log($"{Main.潜艇[index].Name} 自动选择方案为 {路线}");
         }
         else
         {
@@ -272,7 +272,7 @@ public static class 收艇
             var 潜艇 = Main.潜艇[index];
             var api = _海图.GetMogApi(当前海图, (int)潜艇.Level, 潜艇.Range, 潜艇.Speed, Settings.Instance.开主线);
 
-            LogHelper.PrintInfo($"海图:{当前海图} level:{潜艇.Level} range:{潜艇.Range} speed:{潜艇.Speed}");
+            LogHelper.Log($"海图:{当前海图} level:{潜艇.Level} range:{潜艇.Range} speed:{潜艇.Speed}");
 
             //MogShip求解
             求解并发艇(api, 潜艇.Name);
@@ -323,7 +323,7 @@ public static class 收艇
                     foreach (var name in _海图.解析route(_re))
                         route.Add(_海图.已解锁航线.IndexOf(name));
 
-                    LogHelper.PrintInfo($"{string.Join(" → ", _海图.解析route(_re))}");
+                    LogHelper.Log($"{string.Join(" → ", _海图.解析route(_re))}");
 
                     var p1 = route.Count >= 1 ? route[0] : 0;
                     var p2 = route.Count >= 2 ? route[1] : 0;

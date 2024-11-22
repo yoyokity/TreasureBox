@@ -17,7 +17,7 @@ public class 修潜艇
         if (!await AddonHelper.WaitAddonUntil(Addon.修理界面) || Option.ClickedStop)
             return;
 
-        LogHelper.PrintInfo($"正在登记潜水艇信息 {Main.潜艇[index].Name}");
+        LogHelper.Log($"正在登记潜水艇信息 {Main.潜艇[index].Name}");
         登记配件(Addon.修理界面, index);
 
         //修理
@@ -34,7 +34,7 @@ public class 修潜艇
         if (Option.ClickedStop)
             return;
         var v = AddonHelper.GetAddonValue(Addon.修理界面, (uint)index).UInt;
-        LogHelper.PrintInfo($"检查配件1 耗损度{v}");
+        LogHelper.Log($"检查配件1 耗损度{v}");
 
         if (v < 1)
         {
