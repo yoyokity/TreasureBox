@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ECommons.GameHelpers;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using TreasureBox.Helper;
 using TreasureBox.Plugin.Submarine.UI;
 using TreasureBox.Plugin.Submarine.练级;
@@ -375,6 +377,8 @@ public static class 收艇
         Print($"-- 每分钟经验：{route.ExpPerMinute}");
         Print($"-- 总时间：{hoursDifference:F1} h");
         Print($"-- 返航时间：{time}");
+
+        记录返航时间(潜艇名称, time);
     }
 
     private static async Task 发艇信息Print(string 潜艇名称, string 路线)
@@ -396,6 +400,22 @@ public static class 收艇
         Print($"-- 航线：溺没海 {string.Join(" → ", 路线.Select(c => c.ToString()))}");
         Print($"-- 总时间：{hoursDifference:F1} h");
         Print($"-- 返航时间：{time}");
+        
+        记录返航时间(潜艇名称, time);
+    }
+
+    private static void 记录返航时间(string name,string time)
+    {
+        var name_world = Player.NameWithWorld;
+
+        if (!Settings.Instance.返航时间.TryGetValue(name_world, out var value))
+        {
+            value = new Dictionary<string, string>();
+            Settings.Instance.返航时间.Add(name_world, value);
+        }
+
+        value.Add(name, time);
+        Settings.Instance.Save();
     }
 
 

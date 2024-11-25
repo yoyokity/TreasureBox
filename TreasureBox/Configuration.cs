@@ -1,5 +1,6 @@
 ﻿using Dalamud.Configuration;
 using System;
+using System.Collections.Generic;
 using ECommons.DalamudServices;
 
 namespace TreasureBox;
@@ -11,7 +12,7 @@ public class Configuration : IPluginConfiguration
 
     public bool IsConfigWindowMovable { get; set; } = true;
     public bool SomePropertyToBeSavedAndWithADefault { get; set; } = true;
-    
+
     //
     public bool 开主线 = true;
     public bool 练级1天 = false;
@@ -26,8 +27,9 @@ public class Configuration : IPluginConfiguration
     public string 潜艇2路线 = "无";
     public string 潜艇3路线 = "无";
     public string 潜艇4路线 = "无";
+    public Dictionary<string, Dictionary<string, string>> 返航时间 = new();
 
-    
+
     public void Save()
     {
         Svc.PluginInterface.SavePluginConfig(this);

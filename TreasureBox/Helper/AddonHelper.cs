@@ -34,7 +34,8 @@ public static class AddonHelper
     /// <param name="visible">是否可见</param>
     /// <param name="timeout">超时限制 ms</param>
     /// <param name="delay">固定延时，防止自动交互太快</param>
-    public static async Task<bool> WaitAddonUntil(string addonName, bool visible = true, int timeout = 5000, int delay = 300)
+    public static async Task<bool> WaitAddonUntil(string addonName, bool visible = true, int timeout = 5000,
+        int delay = 300)
     {
         await Task.Delay(delay / 2);
 
@@ -66,7 +67,8 @@ public static class AddonHelper
         {
             Byte = re.Byte
         };
-        if (re.Type != ValueType.String && re.Type != ValueType.WideString && re.Type != ValueType.String8)
+        if (re.Type != ValueType.String && re.Type != ValueType.WideString && re.Type != ValueType.String8 &&
+            re.Type != ValueType.ManagedString)
         {
             value.Int = re.Int;
             value.UInt = re.UInt;

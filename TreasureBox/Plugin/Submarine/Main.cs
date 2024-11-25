@@ -11,7 +11,7 @@ namespace TreasureBox.Plugin.Submarine;
 public class Main : IPlugin
 {
     public string Name => "潜水艇";
-    public string Version => "v1.0";
+    public string Version => "v1.1";
     public string ImgPath => @"Resources\img\Penguin01.jpg";
     public string Tips => "yoyo得意力作，遥遥领先！";
 
@@ -60,6 +60,19 @@ public class Main : IPlugin
                 ImGui.Dummy(new Vector2(0, 10));
 
                 路线设置.Draw();
+
+                ImGui.EndChild();
+                ImGui.EndTabItem();
+            }
+            
+            if (ImGui.BeginTabItem("返航"))
+            {
+                ImGui.Dummy(new Vector2(0, 0));
+                ImGui.SameLine(0, 5);
+                ImGui.BeginChild("###潜水艇tab交互", new Vector2(-10, 0), false);
+                ImGui.Dummy(new Vector2(0, 5));
+
+                返航时间.Draw();
 
                 ImGui.EndChild();
                 ImGui.EndTabItem();

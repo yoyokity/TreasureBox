@@ -1,4 +1,6 @@
-﻿namespace TreasureBox;
+﻿using System;
+
+namespace TreasureBox;
 
 public static class Settings
 {
