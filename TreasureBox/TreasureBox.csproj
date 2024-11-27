@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Version>1.3.3.10</Version>
+        <Version>1.3.5</Version>
         <TargetFramework>net8.0</TargetFramework>
         <PlatformTarget>x64</PlatformTarget>
         <Platforms>x64;AnyCPU</Platforms>
@@ -13,6 +13,10 @@
 
     <PropertyGroup>
         <DalamudLibPath>$(AppData)\XIVLauncherCN\addon\Hooks\dev\</DalamudLibPath>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <OutputPath>D:\game\FF14\hack\Dalamud\Plugins\TreasureBox</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -54,10 +58,10 @@
         </Reference>
     </ItemGroup>
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="xcopy /Y /E /I &quot;$(TargetDir)*&quot; &quot;..\out&quot;"/>
-        <Exec Command="xcopy &quot;..\Resources\*&quot; &quot;..\out\Resources&quot; /E /I /Y"/>
-        <Exec Command="rmdir /S /Q &quot;..\out\TreasureBox&quot;"/>
+    <Target Name="CopyResources" AfterTargets="AfterBuild">
+        <ItemGroup>
+            <ResourceFiles Include="..\Resources\**" />
+        </ItemGroup>
+        <Copy SourceFiles="@(ResourceFiles)" DestinationFolder="$(OutDir)\Resources" />
     </Target>
-    
 </Project>

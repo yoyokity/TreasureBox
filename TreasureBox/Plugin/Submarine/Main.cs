@@ -12,7 +12,7 @@ public class Main : IPlugin
 {
     public string Name => "潜水艇";
     public string Version => "v1.1";
-    public string ImgPath => @"Resources\img\Penguin01.jpg";
+    public string ImgPath => @"Resources\Penguin01.jpg";
     public string Tips => "yoyo得意力作，遥遥领先！";
 
     public static 潜艇[] 潜艇 = [new(), new(), new(), new()];

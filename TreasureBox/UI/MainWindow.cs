@@ -35,7 +35,7 @@ public class MainWindow : Window, IDisposable
         ImGui.BeginChild("###Toolbox插件", new Vector2(100, 0), false);
 
         var path = _selectedMenu == "Main" ? "" : _plugins[_selectedMenu].ImgPath;
-        path = path == "" ? @"Resources\img\yoship.png" : path;
+        path = path == "" ? @"Resources\yoship.png" : path;
 
         var image = FileHelper.ImportImage(path);
         if (image != null) ImGui.Image((IntPtr)image, new Vector2(100, 100));

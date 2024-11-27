@@ -407,14 +407,14 @@ public static class 收艇
     private static void 记录返航时间(string name,string time)
     {
         var name_world = Player.NameWithWorld;
-
         if (!Settings.Instance.返航时间.TryGetValue(name_world, out var value))
         {
             value = new Dictionary<string, string>();
             Settings.Instance.返航时间.Add(name_world, value);
         }
 
-        value.Add(name, time);
+        if (!value.TryAdd(name, time))
+            value[name] = time;
         Settings.Instance.Save();
     }
 
