@@ -11,7 +11,7 @@ namespace TreasureBox.Plugin.Submarine;
 public class Main : IPlugin
 {
     public string Name => "潜水艇";
-    public string Version => "v1.1";
+    public string Version => "v1.2";
     public string ImgPath => @"Resources\Penguin01.jpg";
     public string Tips => "yoyo得意力作，遥遥领先！";
 
