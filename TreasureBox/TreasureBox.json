@@ -7,5 +7,6 @@
   "Tags": [
     "plugin"
   ],
+  "DalamudApiLevel": 11,
   "RepoUrl": "https://github.com/yoyokity/TreasureBox"
 }

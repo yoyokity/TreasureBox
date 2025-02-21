@@ -1,18 +1,12 @@
-﻿using Dalamud.Plugin.Ipc;
-using Dalamud.Plugin.Ipc.Exceptions;
-using Dalamud.Plugin.Services;
-using ECommons.DalamudServices;
+﻿using ECommons.DalamudServices;
 using ECommons.EzIpcManager;
 using ECommons.Reflection;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Utility.Numerics;
-using ECommons.Automation.NeoTaskManager;
 using ECommons.GameHelpers;
 
 namespace TreasureBox.Helper;
@@ -21,7 +15,7 @@ public static class PosHelper
 {
     public unsafe static void TPpos(Vector3 pos)
     {
-        Player.IGameObject->SetPosition(pos.X, pos.Y, pos.Z);
+        Player.Character->SetPosition(pos.X, pos.Y, pos.Z);
     }
 
     /// <summary>

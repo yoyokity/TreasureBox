@@ -6,7 +6,7 @@ namespace TreasureBox.Helper;
 
 public static class ChatHelper
 {
-    public static int LastLinkedItemId() => Svc.Chat.LastLinkedItemId;
+    public static uint LastLinkedItemId() => Svc.Chat.LastLinkedItemId;
     public static byte LastLinkedItemFlags() => Svc.Chat.LastLinkedItemFlags;
 
     /// 发送宏指令

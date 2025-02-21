@@ -11,7 +11,7 @@ public class 返航时间
     {
         foreach (var (player, value) in Settings.Instance.返航时间)
         {
-            if (!ImGui.CollapsingHeader($"{player}###返航时间")) continue;
+            if (!ImGui.CollapsingHeader($"{player}###返航时间", ImGuiTreeNodeFlags.DefaultOpen)) continue;
 
             foreach (var (shipName, time) in value)
             {
